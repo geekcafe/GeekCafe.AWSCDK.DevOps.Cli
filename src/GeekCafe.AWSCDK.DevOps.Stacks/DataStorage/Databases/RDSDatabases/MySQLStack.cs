@@ -8,17 +8,17 @@ namespace GeekCafe.AWSCDK.DevOps.Stacks.DataStorage.Databases.RDSDatabases
     public class MySQLStack: Stack
     {
         public DatabaseInstance DBInstance { get; private set; }
-        public MySQLStack(Construct scope, string id, string project, string environment, IStackProps props = null) : base(scope, $"{id}", props)
+        public MySQLStack(Construct scope, string id, IStackProps props = null) : base(scope, $"{id}", props)
         {
         }
 
-        public DatabaseInstance Create(Vpc vpc, SecurityGroup sg, string id)
+        public DatabaseInstance Create(Vpc vpc, SecurityGroup sg, string instanceId)
         {
             var db = new DatabaseInstance(this, "RDSMySQLDB", new DatabaseInstanceProps
             {
                 Engine = DatabaseInstanceEngine.Mysql(new MySqlInstanceEngineProps
                 {
-                    Version = MysqlEngineVersion.VER_8_0,
+                    Version = MysqlEngineVersion.VER_5_7,
                 }),
                 // todo get credital types later
                 // create a username and password
@@ -40,7 +40,7 @@ namespace GeekCafe.AWSCDK.DevOps.Stacks.DataStorage.Databases.RDSDatabases
                 AutoMinorVersionUpgrade = true,
                 StorageType = StorageType.GP2,
                 SecurityGroups = new[] { BuildMySQLSG(this, vpc, sg, "rds-mysql-access") },
-                InstanceIdentifier = id,
+                InstanceIdentifier = instanceId,
                 DeletionProtection = true,
 
             });
@@ -107,6 +107,7 @@ namespace GeekCafe.AWSCDK.DevOps.Stacks.DataStorage.Databases.RDSDatabases
                 FromPort = from,
                 ToPort = to,
                 Protocol = Protocol.TCP,
+                // this seems to be required but I don't know what we need to pass in
                 StringRepresentation = "??"
             };
 

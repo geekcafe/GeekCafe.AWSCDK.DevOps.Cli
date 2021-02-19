@@ -8,7 +8,7 @@ namespace GeekCafe.AWSCDK.DevOps.Stacks
     {
         public Vpc Vpc { get; private set; }
 
-        public VpcStack(Construct scope, string id, string project, string environment, IStackProps props = null) : base(scope, $"{id}-vpc-stack", props)
+        public VpcStack(Construct scope, string id, IStackProps props = null) : base(scope, $"{id}-vpc-stack", props)
         {
             // The code that defines your stack goes here            
             // get the configuration from a file
