@@ -1,82 +1,91 @@
 ﻿using System;
 using Amazon.CDK;
+using GeekCafe.AWSCDK.DevOps.Cli.Commands;
+using GeekCafe.AWSCDK.DevOps.Cli.Commands.FactoryItems;
+using Microsoft.Extensions.CommandLineUtils;
 
 namespace GeekCafe.AWSCDK.DevOps.Cli
 {
     sealed class Program
     {
-        public static void Main(string[] args)
-        { 
+        public static int Main(string[] args)
+        {
 
-            var app = new App();
 
-            var environment = "beta";
-            var project = $"cdk-cli";
-            var id = $"{environment}-{project}";
-            // get the stack name from the args or a setting
-            //var name = $"cdk-proving-ground";
-            //name = "WebAppStack";
-            LogArgs(args);
-
-            // are we creating a vpc
-
-            var vpcStack = new Stacks.VpcStack(app, id, project, environment);
-
-            ApplyDefaultTags(vpcStack, environment, project);
-
-            var createDB = true;
-
-            if(createDB)
+            var app = new CommandLineApplication
             {
-                var list = new string[] { "", "-dev", "-qa"};
-                foreach (var db in list)
-                {
-                    var dbInstance = new Stacks.DataStorage.Databases.RDSDatabases.MySQLStack(app, $"id-mysql-stack{db}", project, environment);
-                    dbInstance.Create(vpcStack.Vpc, null, id);
-                }
-                
-            }
-            
+                Name = "Geek Cafe AWS CDK DevOps CLI",
+                Description = "Wrapper for AWS CDK"
+            };
 
-            var cloudAssembly = app.Synth();
-        }
+            var options = new Commands.Options.Common();
+            options.Register(app, "");
 
-        private static void ApplyDefaultTags(IConstruct construct, string environment, string project)
-        {
-            Tags.Of(construct).Add("Stack-Author", "Eric Wilson");
-            Tags.Of(construct).Add("Stack-Version", "0.0.1-beta");
-            Tags.Of(construct).Add("Stack-Tool", "GeekCafe-AWS-CDK");
-            Tags.Of(construct).Add("Stack-Environment", environment);
-            Tags.Of(construct).Add("Stack-Project", project);
+            // register the commands
+            app.RegisterCommands();
 
-        }
 
-        public static void LogArgs(string[] args)
-        {
+            app.OnExecute(() =>
+            {
+                // get the empty command
+                var cmd = new EmptyCommand(options);
+                return cmd.Execute();
+
+                // show the help if a matching command wasn't passed in
+                //app.ShowHelp();
+                //return (int)ExitCodes.MISSING_OPTIONS;
+            });
+
+            var exitCode = 0;
             try
             {
-                // writing a log file for the args
-                var filePath = System.IO.Directory.GetCurrentDirectory();
-                filePath = System.IO.Path.Join(filePath, "logs");
-                System.IO.Directory.CreateDirectory(filePath);
-
-                filePath = System.IO.Path.Join(filePath, $"args-{System.DateTime.UtcNow.Ticks.ToString()}.txt");
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(filePath))
-                {
-                    file.WriteLine("The following Args were found:");
-                    foreach (string arg in args)
-                    {
-                        file.WriteLine($"arg: {arg}");
-                    }
-
-                    file.WriteLine("-- end of args");
-                }
+                // attempt to execute a command based on what we registred above
+                Utils.Logger.Log($"{app.Name} starting exection.");
+                exitCode = app.Execute(args);
+                Utils.Logger.Log($"{app.Name} executed successfully.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"exception: {ex.Message}");
+                // something bad happened
+                Utils.Logger.Log($"{app.Name} executed with errors.");
+                Utils.Logger.Log($"Fatel Exception {ex.Message}");
+                exitCode = (int)ExitCodes.FATEL_ERROR;
             }
+
+
+            return exitCode;
+
+            
         }
+
+        
+
+        //public static void LogArgs(string[] args)
+        //{
+        //    try
+        //    {
+        //        // writing a log file for the args
+        //        var filePath = System.IO.Directory.GetCurrentDirectory();
+        //        filePath = System.IO.Path.Join(filePath, "logs");
+        //        System.IO.Directory.CreateDirectory(filePath);
+
+        //        filePath = System.IO.Path.Join(filePath, $"args-{System.DateTime.UtcNow.Ticks.ToString()}.txt");
+        //        using (System.IO.StreamWriter file = new System.IO.StreamWriter(filePath))
+        //        {
+        //            file.WriteLine("The following Args were found:");
+        //            foreach (string arg in args)
+        //            {
+        //                file.WriteLine($"arg: {arg}");
+        //            }
+
+        //            file.WriteLine("-- end of args");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"exception: {ex.Message}");
+        //    }
+        //}
 
     }
 }

@@ -18,11 +18,16 @@ It uses the [.NET Core CLI](https://docs.microsoft.com/dotnet/articles/core/) to
 * `cdk diff`        compare deployed stack with current state
 * `cdk docs`        open CDK documentation
 
-## Passing Parametersx
+## Passing Parameters
 * `cdk synth -a "dotnet run -p src/GeekCafe.AWSCDK.DevOps.Cli/GeekCafe.AWSCDK.DevOps.Cli.csproj -one -two three"`
+* `cdk deploy --profile geekcafe -a "dotnet run -p src/GeekCafe.AWSCDK.DevOps.Cli/GeekCafe.AWSCDK.DevOps.Cli.csproj -one -two three"`
 * `cdk deploy --profile geekcafe` specify a profile
 * `cdk deploy --profile geekcafe beta-cdk-cli-vpc-stack` specify a specific stack (when multiple stacks are in the cli)
 
+
+## Other examples of passing in args
+* `cdk synth -a "dotnet GeekCafe.AWSCDK.DevOps.Cli.dll -e qa -p geek"`
+* `cdk synth -a "dotnet GeekCafe.AWSCDK.DevOps.Cli.dll -e qa -p geek" qa-geek-vpc-stack`
 
 
 Enjoy!
