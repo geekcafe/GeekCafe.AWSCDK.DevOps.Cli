@@ -40,6 +40,7 @@ namespace GeekCafe.AWSCDK.DevOps.Cli.Commands.FactoryItems
                     if (!value.HasValue())
                     {
                         Utils.Logger.Log($"Missing {value.Template} {value.Description}");
+                        valid = false;
                     }
                 }
             }
