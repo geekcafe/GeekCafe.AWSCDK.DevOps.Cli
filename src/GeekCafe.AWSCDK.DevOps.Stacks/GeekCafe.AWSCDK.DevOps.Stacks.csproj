@@ -34,5 +34,11 @@
     <Folder Include="Security\Roles\EC2\" />
     <Folder Include="Security\Roles\S3\" />
     <Folder Include="Security\Roles\SSM\" />
+    <Folder Include="Utilities\" />
+    <Folder Include="Security\Utils\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GeekCafe.AWSCDK.DevOps.Core\GeekCafe.AWSCDK.DevOps.Core.csproj" />
+    <ProjectReference Include="..\GeekCafe.AWSCDK.DevOps.Configuration\GeekCafe.AWSCDK.DevOps.Configuration.csproj" />
   </ItemGroup>
 </Project>

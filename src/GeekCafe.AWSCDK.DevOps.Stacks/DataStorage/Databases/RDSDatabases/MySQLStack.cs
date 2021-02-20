@@ -2,17 +2,20 @@
 using Amazon.CDK;
 using Amazon.CDK.AWS.EC2;
 using Amazon.CDK.AWS.RDS;
+using GeekCafe.AWSCDK.DevOps.Configuration;
 
 namespace GeekCafe.AWSCDK.DevOps.Stacks.DataStorage.Databases.RDSDatabases
 {
     public class MySQLStack: Stack
     {
         public DatabaseInstance DBInstance { get; private set; }
-        public MySQLStack(Construct scope, string id, IStackProps props = null) : base(scope, $"{id}", props)
+        private readonly IConfigSettings _configSettings;
+        public MySQLStack(Construct scope, string id, IConfigSettings configSettings, IStackProps props = null) : base(scope, $"{id}-mysql-stack", props)
         {
+            _configSettings = configSettings;
         }
 
-        public DatabaseInstance Create(Vpc vpc, SecurityGroup sg, string instanceId)
+        public DatabaseInstance Create(Amazon.CDK.AWS.EC2.Vpc vpc, SecurityGroup sg, string instanceId)
         {
             var db = new DatabaseInstance(this, "RDSMySQLDB", new DatabaseInstanceProps
             {
@@ -20,14 +23,7 @@ namespace GeekCafe.AWSCDK.DevOps.Stacks.DataStorage.Databases.RDSDatabases
                 {
                     Version = MysqlEngineVersion.VER_5_7,
                 }),
-                // todo get credital types later
-                // create a username and password
-                Credentials = Credentials.FromPassword("master", new SecretValue("sup3rs3cr3t")),
-
-                //create a user and password stored in SSM
-                //Credentials = Credentials.FromPassword("master", SecretValue.SsmSecure("dev/db/password", "1")),
-                //this will create a new user named "master" and generate a password and store it in the the secrets manager
-                //Credentials = Credentials.FromGeneratedSecret("master"),
+                Credentials= GetCredentials(),
                 InstanceType = InstanceType.Of(InstanceClass.BURSTABLE2, InstanceSize.SMALL),
                 VpcSubnets = new SubnetSelection
                 {
@@ -41,7 +37,7 @@ namespace GeekCafe.AWSCDK.DevOps.Stacks.DataStorage.Databases.RDSDatabases
                 StorageType = StorageType.GP2,
                 SecurityGroups = new[] { BuildMySQLSG(this, vpc, sg, "rds-mysql-access") },
                 InstanceIdentifier = instanceId,
-                DeletionProtection = true,
+                DeletionProtection = _configSettings.Rds.DeletionProtection,
 
             });
 
@@ -56,8 +52,21 @@ namespace GeekCafe.AWSCDK.DevOps.Stacks.DataStorage.Databases.RDSDatabases
             return db;
         }
 
+        private Credentials GetCredentials()
+        {
+            // todo get credital types later
+            // create a username and password
+            var credentials = Credentials.FromPassword(_configSettings.Rds.UserName
+                , new SecretValue(_configSettings.Rds.Password));
 
-        private SecurityGroup BuildMySQLSG(Construct scope, Vpc vpc, SecurityGroup sourceSecurityGroup, string name = null)
+            //create a user and password stored in SSM
+            //Credentials = Credentials.FromPassword("master", SecretValue.SsmSecure("dev/db/password", "1")),
+            //this will create a new user named "master" and generate a password and store it in the the secrets manager
+            //Credentials = Credentials.FromGeneratedSecret("master"),
+            return credentials;
+        }
+
+        private SecurityGroup BuildMySQLSG(Construct scope, Amazon.CDK.AWS.EC2.Vpc vpc, SecurityGroup sourceSecurityGroup, string name = null)
         {
             var props = new SecurityGroupProps
             {
@@ -73,7 +82,7 @@ namespace GeekCafe.AWSCDK.DevOps.Stacks.DataStorage.Databases.RDSDatabases
 
             var peer = (sourceSecurityGroup != null) ? sourceSecurityGroup : GenerateSourceSecurityGroup(scope, vpc);
 
-            var port = new Port(GetPortProps(3306, 3306));
+            var port = new Port(Security.Utils.Ports.GetPortProps(3306, 3306, "mysql"));
 
 
             sg.AddIngressRule(peer, port, name);
@@ -84,7 +93,7 @@ namespace GeekCafe.AWSCDK.DevOps.Stacks.DataStorage.Databases.RDSDatabases
             return sg;
         }
 
-        private SecurityGroup GenerateSourceSecurityGroup(Construct scope, Vpc vpc)
+        private SecurityGroup GenerateSourceSecurityGroup(Construct scope, Amazon.CDK.AWS.EC2.Vpc vpc)
         {
             var props = new SecurityGroupProps
             {
@@ -99,19 +108,6 @@ namespace GeekCafe.AWSCDK.DevOps.Stacks.DataStorage.Databases.RDSDatabases
 
             return sg;
         }
-
-        private PortProps GetPortProps(int from, int to)
-        {
-            var portProps = new PortProps
-            {
-                FromPort = from,
-                ToPort = to,
-                Protocol = Protocol.TCP,
-                // this seems to be required but I don't know what we need to pass in
-                StringRepresentation = "??"
-            };
-
-            return portProps;
-        }
+        
     }
 }

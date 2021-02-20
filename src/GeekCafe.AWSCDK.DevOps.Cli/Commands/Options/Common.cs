@@ -7,31 +7,33 @@ namespace GeekCafe.AWSCDK.DevOps.Cli.Commands.Options
     public class Common
     {
         
-        private CommandOption EnvironmentArg { get; set; }
-        private CommandOption ProjectArg { get; set; }
-        private CommandOption UserDataArgs { get; set; }
-        private CommandOption StackArgs { get; set; }
-        private CommandOption IdArg { get; set; }
+        private CommandOption _environmentArg { get; set; }
+        private CommandOption _projectArg { get; set; }
+        private CommandOption _userDataArgs { get; set; }
+        private CommandOption _stackArgs { get; set; }
+        private CommandOption _idArg { get; set; }
+        private CommandOption _configurationFileArgs { get; set; }
 
+        private Configuration.ConfigSettngs _configSettngs { get; set; }
 
-        public Common()
-        {
-        }
-
+        public Common() { }
+        
         public void Register(CommandLineApplication command, string commandDescription)
         {
-            
-            EnvironmentArg = command.Option("-e | --env", $"The environment", CommandOptionType.SingleValue);
-            ProjectArg = command.Option("-p | --project", $"The project", CommandOptionType.SingleValue);
-            IdArg = command.Option("-i | --id", $"The stack id", CommandOptionType.SingleValue);
 
-            UserDataArgs = command.Option("-u | --user-data", $"User Data Scripts.  Add one or more.  The files will be appended", CommandOptionType.MultipleValue);
-            StackArgs = command.Option("-s | --stack", $"One or more stack to execute", CommandOptionType.MultipleValue);
+            _environmentArg = command.Option("-e | --env", $"The environment", CommandOptionType.SingleValue);
+            // the -p command can interfer with the dotnet run command -p when pointing to a project
+            // i may want to using something else like -x
+            _projectArg = command.Option("-p | --project", $"The project", CommandOptionType.SingleValue);
+            _idArg = command.Option("-i | --id", $"The stack id. If not supplied it will use Environment-Project as the Id", CommandOptionType.SingleValue);
 
-            command.Description = commandDescription;
-
+            _userDataArgs = command.Option("-u | --user-data", $"User Data Scripts.  Add one or more.  The files will be appended", CommandOptionType.MultipleValue);
+            _stackArgs = command.Option("-s | --stack", $"One or more stack to execute", CommandOptionType.MultipleValue);
+            _configurationFileArgs = command.Option("-c | --c", $"Configuration File Path", CommandOptionType.MultipleValue);           
             // help option
             command.HelpOption("-?|-h|--help");
+
+            command.Description = commandDescription;
         }
 
         /// <summary>
@@ -41,7 +43,7 @@ namespace GeekCafe.AWSCDK.DevOps.Cli.Commands.Options
         {
             get
             {
-                return EnvironmentArg.HasValue() ? EnvironmentArg.Value() : "dev";
+                return _environmentArg.HasValue() ? _environmentArg.Value() : "dev";
             }
         }
 
@@ -52,7 +54,7 @@ namespace GeekCafe.AWSCDK.DevOps.Cli.Commands.Options
         {
             get
             {
-                return ProjectArg.HasValue() ? ProjectArg.Value() : "project";
+                return _projectArg.HasValue() ? _projectArg.Value() : "project";
             }
         }
 
@@ -63,7 +65,7 @@ namespace GeekCafe.AWSCDK.DevOps.Cli.Commands.Options
         {
             get
             {
-                return IdArg.HasValue() ? IdArg.Value() : $"{Environment}-{Project}";
+                return _idArg.HasValue() ? _idArg.Value() : $"{Environment}-{Project}";
             }
         }
 
@@ -74,7 +76,7 @@ namespace GeekCafe.AWSCDK.DevOps.Cli.Commands.Options
         {
             get
             {
-                return UserDataArgs.HasValue() ? ProjectArg.Values : new List<string>();
+                return _userDataArgs.HasValue() ? _userDataArgs.Values : new List<string>();
             }
         }
 
@@ -85,9 +87,29 @@ namespace GeekCafe.AWSCDK.DevOps.Cli.Commands.Options
         {
             get
             {
-                return StackArgs.HasValue() ? StackArgs.Values : new List<string>();
+                return _stackArgs.HasValue() ? _stackArgs.Values : new List<string>();
             }
         }
+
+        public Configuration.ConfigSettngs ConfigSettngs
+        {
+            get
+            {
+                if (_configurationFileArgs.HasValue())
+                {
+                    _configSettngs = Configuration.ConfigSettngs.Load(_configurationFileArgs.Value());
+                }
+                else
+                {
+                    // for testing
+                    _configSettngs = Configuration.ConfigSettngs.Load("/Users/eric.wilson/working/projects/geekcafe/aws-cdk-dot-netcore/aws-cdk-devops-lib/configurations/geekcafe-local/dev/config.json");
+                }
+
+                return _configSettngs;
+            }
+        }
+
+        
 
     }
 }

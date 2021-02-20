@@ -9,13 +9,15 @@ namespace GeekCafe.AWSCDK.DevOps.Cli.Commands.FactoryItems
         public CommandLineApplication BuildCommand(CommandLineApplication command)
         {
 
-            Register(command, "Deploy Infrastructure");
+            Register(command, "Create a configuration template");
+            
+
             command.OnExecute(() =>
             {
                 if (!IsValid()) return (int)ExitCodes.MISSING_OPTIONS;
 
                 // execute the stack service
-
+                
 
                 // return success
                 return (int)ExitCodes.SUCCESS;

@@ -29,28 +29,63 @@ namespace GeekCafe.AWSCDK.DevOps.Cli.Commands.FactoryItems
         public int Execute()
         {
             if (!IsValid()) return (int)ExitCodes.MISSING_OPTIONS;
+                       
+            var app = new App();                       
+            var config = Options.ConfigSettngs;
 
-            // execute the stack service
-            var app = new App();
+            
 
-            // todo get from args
-            var environment = Options.Environment;
-            var project = Options.Project;
-            var id = Options.Id;
+            if(config == null)
+            {
+                Utils.Logger.Log($"ERROR Expected Config File information", Microsoft.Extensions.Logging.LogLevel.Critical);
+                return -1;
+            }
 
+            Utils.Logger.Log($"Vpc Id: {config.Vpc.Id}");
+            Utils.Logger.Log($"Vpc Name: {config.Vpc.Name}");
+            Utils.Logger.Log($"Vpc Stack Id: {config.Vpc.StackName}");
 
             // create a vpc
-            var vpcStack = new Stacks.VpcStack(app, id);
+            var vpcStack = new Stacks.VpcStack(app, config);
+            ApplyDefaultTags(vpcStack, config.Environment, config.Project);
 
-            ApplyDefaultTags(vpcStack, environment, project);
+            
 
-            // create the 
 
             // create a db
-            var dbInstance = new Stacks.DataStorage.Databases.RDSDatabases.MySQLStack(app, $"id-mysql-stack-{id}");
-            dbInstance.Create(vpcStack.Vpc, null, id);
+            //var dbStack = new Stacks.DataStorage.Databases.RDSDatabases.MySQLStack(app, $"{id}", config);
+            //var dbAccessSg = Stacks.Security.SecurityGroups.GenericSecurityGroup.BuildGenericSecurityGroup(dbStack, vpcStack.Vpc, "rds-access");
+            //dbStack.Create(vpcStack.Vpc, dbAccessSg, id);
 
-            // create 
+            // apply the tags 
+            //ApplyDefaultTags(dbStack, environment, project);
+
+
+
+            // create the autoscaling groupd
+            var auto = new Stacks.AutoScalingGroupStack(app, config);
+            //ApplyASGTags(auto);
+            var asg = auto.Create(vpcStack.Vpc, null);//, $"{id}-asg", "/Users/eric.wilson/working/projects/geekcafe/aws-cdk-dot-netcore/aws-cdk-devops-lib/configurations/samples/gc-website/user-data");
+            
+
+
+
+            var lb = new Stacks.LoadBalancers.ALBStack(app, config);
+            var worldToElb = Stacks.Security.SecurityGroups.CreateHttpHttps(lb, vpcStack.Vpc, "World To ELB", "ELB Access");
+
+            // allow access from the ELB to the ASG
+            asg.AddSecurityGroup(Stacks.Security.SecurityGroups.CreateHttpHttps(auto, vpcStack.Vpc, "ELB to ASG", "Access to ASG from the ELB", new[] { worldToElb }));
+
+
+            //var worldToElb = Stacks.Security.SecurityGroups.CreateWorldToElb(vpcStack,)
+
+            //// security groups
+            //var webSG = Stacks.Security.SecurityGroups.WebSecurityGroup.BuildHttpHttpsSecurityGroup(lb, vpcStack.Vpc, "http-https");
+            //var certArn = "arn:aws:acm:us-east-1:867915409343:certificate/eb2b584c-421d-4134-b679-1746642b5e3f";
+            //lb.Create(lb, vpcStack.Vpc, asg, webSG, $"{id}", certArn);
+
+            // security group that allows access from the outside word
+
 
 
             var cloudAssembly = app.Synth();
@@ -58,6 +93,8 @@ namespace GeekCafe.AWSCDK.DevOps.Cli.Commands.FactoryItems
             // return success
             return (int)ExitCodes.SUCCESS;
         }
+
+        
 
         private static void ApplyDefaultTags(IConstruct construct, string environment, string project)
         {
@@ -68,5 +105,15 @@ namespace GeekCafe.AWSCDK.DevOps.Cli.Commands.FactoryItems
             Tags.Of(construct).Add("Stack-Project", project);
 
         }
+
+        //private static void ApplyASGTags(IConstruct construct)
+        //{
+        //    Tags.Of(construct).Add("ENVIRONMENT", "dev");
+        //    Tags.Of(construct).Add("PROJECT", "geek-cafe-web-site");
+        //    Tags.Of(construct).Add("CERT_ARN", "arn:aws:acm:us-east-1:867915409343:certificate/eb2b584c-421d-4134-b679-1746642b5e3f");
+        //    Tags.Of(construct).Add("BUCKET_NAME", "geekcafe-piranha-dev-media");
+        //    Tags.Of(construct).Add("DOCKER_IMAGE", "867915409343.dkr.ecr.us-east-1.amazonaws.com/geekcafe-website:dev");
+            
+        //}
     }
 }

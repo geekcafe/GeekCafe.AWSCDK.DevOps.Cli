@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GeekCafe.AWSCDK.DevOps.Stacks\GeekCafe.AWSCDK.DevOps.Stacks.csproj" />
+    <ProjectReference Include="..\GeekCafe.AWSCDK.DevOps.Configuration\GeekCafe.AWSCDK.DevOps.Configuration.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Commands\" />

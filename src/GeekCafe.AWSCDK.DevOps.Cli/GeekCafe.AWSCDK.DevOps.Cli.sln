@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeekCafe.AWSCDK.DevOps.Cli"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeekCafe.AWSCDK.DevOps.Stacks", "..\GeekCafe.AWSCDK.DevOps.Stacks\GeekCafe.AWSCDK.DevOps.Stacks.csproj", "{B9460596-8BB5-4075-854B-DD34968FB7D5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeekCafe.AWSCDK.DevOps.Configuration", "..\GeekCafe.AWSCDK.DevOps.Configuration\GeekCafe.AWSCDK.DevOps.Configuration.csproj", "{A312A6C9-A979-4EB5-8140-426E33A05415}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeekCafe.AWSCDK.DevOps.Core", "..\GeekCafe.AWSCDK.DevOps.Core\GeekCafe.AWSCDK.DevOps.Core.csproj", "{3836435B-130D-4F78-8BD0-0718FBE56449}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{B9460596-8BB5-4075-854B-DD34968FB7D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9460596-8BB5-4075-854B-DD34968FB7D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9460596-8BB5-4075-854B-DD34968FB7D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A312A6C9-A979-4EB5-8140-426E33A05415}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A312A6C9-A979-4EB5-8140-426E33A05415}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A312A6C9-A979-4EB5-8140-426E33A05415}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A312A6C9-A979-4EB5-8140-426E33A05415}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3836435B-130D-4F78-8BD0-0718FBE56449}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3836435B-130D-4F78-8BD0-0718FBE56449}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3836435B-130D-4F78-8BD0-0718FBE56449}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3836435B-130D-4F78-8BD0-0718FBE56449}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -13,9 +13,7 @@ namespace GeekCafe.AWSCDK.DevOps.Cli.Commands
         {
             // load the factory
             var factory = new CommandFactory();
-           
-            
-
+                      
             // go through each item that is part of the factory
             foreach (var cmd in factory.Commands)
             {

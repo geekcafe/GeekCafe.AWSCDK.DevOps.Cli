@@ -3,28 +3,31 @@ using Amazon.CDK;
 using Amazon.CDK.AWS.ElasticLoadBalancingV2;
 using Amazon.CDK.AWS.AutoScaling;
 using Amazon.CDK.AWS.EC2;
+using GeekCafe.AWSCDK.DevOps.Configuration;
 
 namespace GeekCafe.AWSCDK.DevOps.Stacks.LoadBalancers
 {
     public class ALBStack : Stack
     {
+        private IConfigSettings _config;
 
-        public ALBStack(Construct scope, string id, string project, string environment, IStackProps props = null) : base(scope, $"{id}-alb-stack", props)
+        public ALBStack(Construct scope, IConfigSettings config, IStackProps props = null) : base(scope, $"{config.Alb.StackName}", props)
         {
+            _config = config;
         }
 
-        public ApplicationLoadBalancer Create(Construct construct, Vpc vpc, AutoScalingGroup asg, SecurityGroup sg, string name)
+        public ApplicationLoadBalancer Create(Construct construct, Amazon.CDK.AWS.EC2.Vpc vpc, Amazon.CDK.AWS.AutoScaling.AutoScalingGroup asg, SecurityGroup sg)
         {
-            var lb = new ApplicationLoadBalancer(construct, "LB", new ApplicationLoadBalancerProps
+            var lb = new ApplicationLoadBalancer(construct, _config.Alb.Name, new ApplicationLoadBalancerProps
             {
                 Vpc = vpc,
                 InternetFacing = true,
-                LoadBalancerName = name,
+                LoadBalancerName = _config.Alb.Name,
                 SecurityGroup = sg
 
             });
 
-            Amazon.CDK.Tags.Of(lb).Add("Name", $"{name}");
+            Amazon.CDK.Tags.Of(lb).Add("Name", $"{_config.Alb.Name}");
 
             // add a listener
             var listener = AddListener(lb, 80, null);
@@ -36,8 +39,8 @@ namespace GeekCafe.AWSCDK.DevOps.Stacks.LoadBalancers
             });
 
             // add specific tags
-            Amazon.CDK.Tags.Of(listener).Add("Name", $"{name}-listner");
-            Amazon.CDK.Tags.Of(group).Add("Name", $"{name}-fleet");
+            Amazon.CDK.Tags.Of(listener).Add("Name", $"{_config.Alb.Name}-listner");
+            Amazon.CDK.Tags.Of(group).Add("Name", $"{_config.Alb.Name}-fleet");
 
 
             // exmple of a fixed ok message returned by the LB
@@ -64,18 +67,17 @@ namespace GeekCafe.AWSCDK.DevOps.Stacks.LoadBalancers
                 })
             });
 
-            // this id was obtained from the certificate manager
-            // TODO, get the certificate (if it exists based on tags?)
-            // or pull the cert from a configuration file and only add the cert if it exists
-            var certArn = "arn:aws:acm:us-east-1:867915409343:certificate/eb2b584c-421d-4134-b679-1746642b5e3f";
-            listener = AddListener(lb, 443, certArn);
-
-            // forward any ssl requests to the target group
-            listener.AddAction("SSLForward", new AddApplicationActionProps
+            //"arn:aws:acm:us-east-1:xxxxxxxxx:certificate/eb2b584c-421d-4134-b679-1746642b5e3f"
+            if (_config.Alb.CertArn != null)
             {
-                Action = ListenerAction.Forward(new[] { group }),
-            });
+                listener = AddListener(lb, 443, _config.Alb.CertArn);
 
+                // forward any ssl requests to the target group
+                listener.AddAction("SSLForward", new AddApplicationActionProps
+                {
+                    Action = ListenerAction.Forward(new[] { group }),
+                });
+            }
 
 
             return lb;
@@ -93,8 +95,7 @@ namespace GeekCafe.AWSCDK.DevOps.Stacks.LoadBalancers
                 Certificates = certs,
                 Port = port,
             });
-
-            //listener.Connections.AllowDefaultPortFromAnyIpv4("Open to the world");
+            
 
             return listener;
 
