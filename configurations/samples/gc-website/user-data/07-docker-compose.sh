@@ -2,7 +2,7 @@
 
 
 
-docker_dir="~/app/docker"
+docker_dir="/app/docker"
 
 #####################################################################################################################################################
 # APP Setup
@@ -40,13 +40,18 @@ EOF
 
 
 # replace the __PLACEHOLDERS__ with the variable 
-sed -i "s/__DOCKER_IMAGE__/${DOCKER_IMAGE}/g" "${docker_dir}/docker-compose.yml"
-sed -i "s/__ENVIRONMENT__/${ENVIRONMENT}/g" "${docker_dir}/docker-compose.yml" 
+# getting an issue with / as delimeter, switching to pipe
+sudo sed -i "s|__DOCKER_IMAGE__|${DOCKER_IMAGE}|g" "${docker_dir}/docker-compose.yml"
+sudo sed -i "s|__ENVIRONMENT__|${ENVIRONMENT}|g" "${docker_dir}/docker-compose.yml" 
 
 
 ### switch to the correct directory 
 cd "${docker_dir}"
 ### launch it
+
+### login to ecr
+aws ecr get-login-password --region ${DOCKER_REPO_REGION} | docker login --username AWS --password-stdin ${DOCKER_REPO}
+
 docker-compose up -d
 
 # / App Setup
