@@ -36,6 +36,7 @@
     <Folder Include="Security\Roles\SSM\" />
     <Folder Include="Utilities\" />
     <Folder Include="Security\Utils\" />
+    <Folder Include="Security\Roles\ECR\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GeekCafe.AWSCDK.DevOps.Core\GeekCafe.AWSCDK.DevOps.Core.csproj" />
