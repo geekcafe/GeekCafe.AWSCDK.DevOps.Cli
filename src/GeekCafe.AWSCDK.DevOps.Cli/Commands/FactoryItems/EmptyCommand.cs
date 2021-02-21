@@ -51,7 +51,7 @@ namespace GeekCafe.AWSCDK.DevOps.Cli.Commands.FactoryItems
 
             
 
-
+            // todo add db back into the process
             // create a db
             //var dbStack = new Stacks.DataStorage.Databases.RDSDatabases.MySQLStack(app, $"{id}", config);
             //var dbAccessSg = Stacks.Security.SecurityGroups.GenericSecurityGroup.BuildGenericSecurityGroup(dbStack, vpcStack.Vpc, "rds-access");
@@ -65,27 +65,21 @@ namespace GeekCafe.AWSCDK.DevOps.Cli.Commands.FactoryItems
             // create the autoscaling groupd
             var auto = new Stacks.AutoScalingGroupStack(app, config);
             //ApplyASGTags(auto);
-            var asg = auto.Create(vpcStack.Vpc, null);//, $"{id}-asg", "/Users/eric.wilson/working/projects/geekcafe/aws-cdk-dot-netcore/aws-cdk-devops-lib/configurations/samples/gc-website/user-data");
+            var sg = Stacks.Security.SecurityGroups.CreateHostSG(auto, vpcStack.Vpc, "web-app-asg-sg", "web application asg");
+            var asg = auto.Create(vpcStack.Vpc, sg);
             
 
 
 
-            var lb = new Stacks.LoadBalancers.ALBStack(app, config);
+            var lb = new Stacks.LoadBalancers.ALBStack(app, config);            
             var worldToElb = Stacks.Security.SecurityGroups.CreateHttpHttps(lb, vpcStack.Vpc, "World To ELB", "ELB Access");
-
+            
             // allow access from the ELB to the ASG
             asg.AddSecurityGroup(Stacks.Security.SecurityGroups.CreateHttpHttps(auto, vpcStack.Vpc, "ELB to ASG", "Access to ASG from the ELB", new[] { worldToElb }));
 
+            lb.Create(lb, vpcStack.Vpc, asg, worldToElb);
 
-            //var worldToElb = Stacks.Security.SecurityGroups.CreateWorldToElb(vpcStack,)
-
-            //// security groups
-            //var webSG = Stacks.Security.SecurityGroups.WebSecurityGroup.BuildHttpHttpsSecurityGroup(lb, vpcStack.Vpc, "http-https");
-            //var certArn = "arn:aws:acm:us-east-1:867915409343:certificate/eb2b584c-421d-4134-b679-1746642b5e3f";
-            //lb.Create(lb, vpcStack.Vpc, asg, webSG, $"{id}", certArn);
-
-            // security group that allows access from the outside word
-
+            
 
 
             var cloudAssembly = app.Synth();
