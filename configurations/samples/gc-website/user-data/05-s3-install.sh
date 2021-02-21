@@ -16,9 +16,11 @@ fi
 sudo mkdir -p $S3_MEDIA_DIR
 
 # sudo s3fs bucket-name local directory add the role, were using, allow the local directory to have files in it
-# $ROLE_NAME is being pulled from an environment variable, which is loaded via the EC2 tags with a matching tag name
-# and value contains the ROLE_NAME
-sudo s3fs $BUCKET_NAME $S3_MEDIA_DIR -o iam_role=$ROLE_NAME -o allow_other -o nonempty
-#sudo s3fs praxent-axiom-database /app/s3 -o iam_role=$ROLE_NAME -o allow_other -o nonempty
+
+role_name=$( curl -s http://169.254.169.254/latest/meta-data/iam/security-credentials/ )
+#curl -s http://169.254.169.254/latest/meta-data/iam/security-credentials/${role_name}
+
+sudo s3fs $BUCKET_NAME $S3_MEDIA_DIR -o iam_role=$role_name -o allow_other -o nonempty
+
 # / S3 Mounting
 #####################################################################################################################################################
