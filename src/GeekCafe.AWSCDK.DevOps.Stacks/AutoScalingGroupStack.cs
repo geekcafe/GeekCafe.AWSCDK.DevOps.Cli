@@ -18,7 +18,7 @@ namespace GeekCafe.AWSCDK.DevOps.Stacks
         public Amazon.CDK.AWS.AutoScaling.AutoScalingGroup Create(Amazon.CDK.AWS.EC2.Vpc vpc, SecurityGroup sg)
         {
             // todo define roles in config
-            var role = new Security.Roles.IamRole().Create(this);
+            var role = new Security.Roles.IamRole().Create(this, $"{_config.Environment}-{_config.Project}-asg-ec2-role");
             var selection = new SubnetSelection
             {
                 SubnetType = SubnetType.PUBLIC
