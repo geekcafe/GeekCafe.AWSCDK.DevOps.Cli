@@ -7,6 +7,7 @@ namespace GeekCafe.AWSCDK.DevOps.Configuration
         public Rds(IGlobalSettings globalSettings): base(globalSettings) { }
         public string UserName { get; set; }
         public string Password { get; set; }
+        public string DatabaseName { get; set; }
         public bool DeletionProtection { get; set; } = true;
 
     }

@@ -36,7 +36,7 @@ namespace GeekCafe.AWSCDK.DevOps.Cli.Commands.FactoryItems
                 string result = process.StandardOutput.ReadToEnd();
                 process.WaitForExit();
 
-                Utils.Logger.Log(result);
+                Utilities.Logger.Log(result);
 
                 // return success
                 return (int)ExitCodes.SUCCESS;

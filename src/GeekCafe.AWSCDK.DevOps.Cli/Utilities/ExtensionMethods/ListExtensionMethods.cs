@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GeekCafe.AWSCDK.DevOps.Cli.Utils.ExtensionMethods
+namespace GeekCafe.AWSCDK.DevOps.Cli.Utilities.ExtensionMethods
 {
     public static class ListExtensionMethods
     {

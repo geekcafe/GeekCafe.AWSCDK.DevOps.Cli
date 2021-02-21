@@ -43,7 +43,7 @@ namespace GeekCafe.AWSCDK.DevOps.Cli.Commands
         private void Initialize()
         {
             // load all matching commands
-            var types = Utils.FactoryHelpers.GetMatchingTypes(typeof(ICommandFactoryItem));
+            var types = Utilities.FactoryHelpers.GetMatchingTypes(typeof(ICommandFactoryItem));
 
             foreach (var type in types)
             {

@@ -21,12 +21,12 @@ namespace GeekCafe.AWSCDK.DevOps.Cli.Commands.FactoryItems
 
                 var path = Path.Value();
 
-                Utils.Logger.Log($"Creating a template file in ${path}");
+                Utilities.Logger.Log($"Creating a template file in ${path}");
                 // build the template
                 var result = DevOps.Configuration.ConfigSettngs.CreateTemplate(path);
 
 
-                Utils.Logger.Log($"Template file created ${result}");
+                Utilities.Logger.Log($"Template file created ${result}");
 
 
                 // return success

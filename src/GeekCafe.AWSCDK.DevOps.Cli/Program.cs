@@ -45,15 +45,15 @@ namespace GeekCafe.AWSCDK.DevOps.Cli
             try
             {
                 // attempt to execute a command based on what we registred above
-                Utils.Logger.Log($"{app.Name} starting exection.");
+                Utilities.Logger.Log($"{app.Name} starting exection.");
                 exitCode = app.Execute(args);
-                Utils.Logger.Log($"{app.Name} executed successfully.");
+                Utilities.Logger.Log($"{app.Name} executed successfully.");
             }
             catch (Exception ex)
             {
                 // something bad happened
-                Utils.Logger.Log($"{app.Name} executed with errors.");
-                Utils.Logger.Log($"Fatel Exception {ex.Message}");
+                Utilities.Logger.Log($"{app.Name} executed with errors.");
+                Utilities.Logger.Log($"Fatel Exception {ex.Message}");
                 exitCode = (int)ExitCodes.FATEL_ERROR;
             }
 

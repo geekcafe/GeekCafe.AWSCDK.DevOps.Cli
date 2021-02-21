@@ -9,7 +9,7 @@ namespace GeekCafe.AWSCDK.DevOps.Configuration
 
         private IGlobalSettings _globalSettings;
         private string _stackName = "";
-
+        private string _name = "";
         public _BaseClass() { }
 
         public _BaseClass(IGlobalSettings globalSettings)
@@ -25,8 +25,18 @@ namespace GeekCafe.AWSCDK.DevOps.Configuration
         public string Environment => _globalSettings?.Environment;
 
 
-        public string Id { get; set; } = "";
-        public string Name { get; set; } = "";
+        //public string Id { get; set; } = "";
+        public string Name
+        {
+            get
+            {
+                return $"{Environment}-{Project}-{_name}";
+            }
+            set
+            {
+                _name = value;
+            }
+        }
         /// <summary>
         /// Name of the CloudFormation Stack which is managed by the CDK
         /// </summary>

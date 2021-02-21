@@ -343,3 +343,5 @@ logs/*
 .DS_Store
 
 configurations/geekcafe-local/dev/config.json
+
+configurations/geekcafe-local/dev/config-template.json

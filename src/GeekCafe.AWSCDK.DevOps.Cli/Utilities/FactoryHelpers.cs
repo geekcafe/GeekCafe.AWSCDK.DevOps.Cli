@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GeekCafe.AWSCDK.DevOps.Cli.Utils
+namespace GeekCafe.AWSCDK.DevOps.Cli.Utilities
 {
     public class FactoryHelpers
     {

@@ -47,13 +47,25 @@ namespace GeekCafe.AWSCDK.DevOps.Stacks.Security
         {
             var ports = new Port[]
             {
-                new Port(Utils.Ports.GetPortProps(3360, 3360, "MySQL/Auora"))
+                new Port(Utils.Ports.GetPortProps(3306, 3306, "MySQL/Auora"))
             };
             var sg = CreatePeer(construct, vpc, name, description, elbSecurityGroup, ports);
 
             return sg;
         }
 
+        public static void AddResourceAccessToRds(SecurityGroup securityGroup, SecurityGroup resource)
+        {
+            var ports = new Port[]
+            {
+                new Port(Utils.Ports.GetPortProps(3306, 3306, "MySQL/Auora"))
+            };
+
+            foreach (var port in ports)
+            {
+                securityGroup.AddIngressRule(resource, port);
+            }
+        }
 
         public static SecurityGroup CreateHostSG(Constructs.Construct construct, Vpc vpc, string name, string description)
         {

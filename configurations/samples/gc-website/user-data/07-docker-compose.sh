@@ -29,6 +29,11 @@ services:
       ASPNETCORE_ENVIRONMENT: __ENVIRONMENT__
       ASPNETCORE_URLS: http://+:5000
       APP_DB_CONNECTION_STRING: ${APP_DB_CONNECTION_STRING}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
     ports:
        - "5000:5000"   
     depends_on:

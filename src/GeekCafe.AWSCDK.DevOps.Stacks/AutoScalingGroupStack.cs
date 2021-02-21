@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Amazon.CDK;
 using Amazon.CDK.AWS.AutoScaling;
@@ -61,6 +62,16 @@ namespace GeekCafe.AWSCDK.DevOps.Stacks
 
             return asg;
         }
+
+        public void AddTag(IConstruct scope, string name, string value)
+        {
+            var tags = new List<Configuration.Tag>
+            {
+                new Configuration.Tag() {Name = name, Value = value}
+            };
+            Utilities.Tagging.Tag(scope, tags);
+        }
+
 
         private UserData GetUserData(string path)
         {
