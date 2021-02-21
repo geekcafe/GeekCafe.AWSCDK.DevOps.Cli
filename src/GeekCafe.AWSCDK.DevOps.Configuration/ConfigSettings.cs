@@ -4,7 +4,7 @@ using GeekCafe.AWSCDK.DevOps.Core.Utilities;
 
 namespace GeekCafe.AWSCDK.DevOps.Configuration
 {
-    public interface IConfigSettings
+    public interface IConfigSettings: IGlobalSettings
     {
         public string Environment { get; set; } 
         public string Company { get; set; }
@@ -15,18 +15,26 @@ namespace GeekCafe.AWSCDK.DevOps.Configuration
         public LoadBalancer Alb { get; set; }
         public List<Tag> Tags { get; set; }
     }
-    public class ConfigSettngs: IConfigSettings
+    public class ConfigSettngs: GlobalSettings, IConfigSettings, IGlobalSettings
     {
-        public string Environment { get; set; } = "";
-        public string Company { get; set; } = "";
-        public string Project { get; set; } = "";
+        
         public Vpc Vpc { get; set; } = new Vpc();
         public Rds Rds { get; set; } = new Rds();
         public AutoScalingGroup Asg { get; set; } = new AutoScalingGroup();
         public LoadBalancer Alb { get; set; } = new LoadBalancer();
         public List<Tag> Tags { get; set; } = new List<Tag>();
 
-        public ConfigSettngs() { }
+        public ConfigSettngs()
+        {
+            Asg = new AutoScalingGroup(this);
+            Vpc = new Vpc(this);
+            Rds = new Rds(this);
+            Alb = new LoadBalancer(this);
+
+        }
+        
+
+
 
         public static ConfigSettngs Load(string path)
         {

@@ -2,7 +2,9 @@
 namespace GeekCafe.AWSCDK.DevOps.Configuration
 {
     public class Vpc: _BaseClass
-    {     
+    {
+        public Vpc() { }
+        public Vpc(IGlobalSettings globalSettings) : base(globalSettings) { }
         /// <summary>
         /// The Cidr block
         /// </summary>
