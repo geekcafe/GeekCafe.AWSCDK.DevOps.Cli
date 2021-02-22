@@ -342,6 +342,4 @@ logs/*
 # End of https://www.gitignore.io/api/csharp
 .DS_Store
 
-configurations/geekcafe-local/dev/config.json
-
-configurations/geekcafe-local/dev/config-template.json
+configurations/geekcafe-local/
