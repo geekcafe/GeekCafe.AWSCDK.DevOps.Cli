@@ -11,23 +11,23 @@ namespace GeekCafe.AWSCDK.DevOps.Stacks.Security.Roles
         {
         }
 
-        public Role Create(Construct scope, string name)
+        public Role Create(Construct scope, IConfigSettings config, string name)
         {
 
 
             var props = new RoleProps
             {
-                RoleName = name,
-                ManagedPolicies = GetManagedPolicies(scope),
+                RoleName = config.FormatName(name),
+                ManagedPolicies = GetManagedPolicies(scope, config),
                 AssumedBy = new ServicePrincipal("ec2.amazonaws.com")
 
             };
-            var role = new Role(scope, "iam-role", props);
+            var role = new Role(scope, config.FormatName(name), props);
 
             return role;
         }
 
-        public ManagedPolicy[] GetManagedPolicies(Construct scope)
+        public ManagedPolicy[] GetManagedPolicies(Construct scope, IConfigSettings config)
         {
 
             var ssmStatements = new Security.Roles.SSM.ManagedInstanceCore().Statements;
@@ -37,11 +37,11 @@ namespace GeekCafe.AWSCDK.DevOps.Stacks.Security.Roles
             var ecrStatements = new Security.Roles.ECR.ECRAccess().Statements;
             var policies = new List<ManagedPolicy>();
 
-            policies.Add(Policy(scope, "ssm-statements", null, ssmStatements));
+            policies.Add(Policy(scope, config.FormatName("ssm-statements"), null, ssmStatements));
             //policies.Add(Policy(scope, "ssm-assume", null, ssmAssume));
-            policies.Add(Policy(scope, "ec2-full-access", null, ec2Statements));
-            policies.Add(Policy(scope, "s3-full-access", null, s3Statments));
-            policies.Add(Policy(scope, "ecr-access", null, ecrStatements));
+            policies.Add(Policy(scope, config.FormatName("ec2-full-access"), null, ec2Statements));
+            policies.Add(Policy(scope, config.FormatName("s3-full-access"), null, s3Statments));
+            policies.Add(Policy(scope, config.FormatName("ecr-access"), null, ecrStatements));
 
 
 

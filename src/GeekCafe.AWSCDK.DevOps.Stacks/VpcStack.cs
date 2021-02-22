@@ -23,8 +23,8 @@ namespace GeekCafe.AWSCDK.DevOps.Stacks
             Vpc = new Amazon.CDK.AWS.EC2.Vpc(this, config.Vpc.Name, vpcProps);
 
             // tag it
-            Utilities.Tagging.Tag(Vpc, config.Vpc.Tags);
-            Utilities.Tagging.Tag(Vpc, config.Tags);
+            Utilities.Tagging.Tag(Vpc, config, config.Vpc.Tags);
+            Utilities.Tagging.Tag(Vpc, config, config.Tags);
             
         }
     }

@@ -5,7 +5,9 @@ namespace GeekCafe.AWSCDK.DevOps.Configuration
     {
         public string Environment { get; set; }
         public string Company { get; set; }
-        public string Project { get; set; } 
+        public string Project { get; set; }
+        string Parse(string value);
+        string FormatName(string name);
     }
 
     public class GlobalSettings: IGlobalSettings
@@ -13,5 +15,16 @@ namespace GeekCafe.AWSCDK.DevOps.Configuration
         public string Environment { get; set; } = "";
         public string Company { get; set; } = "";
         public string Project { get; set; } = "";
+
+
+        public string Parse(string value)
+        {
+            return value.Replace("__ENV__", Environment);
+        }
+
+        public string FormatName(string name)
+        {
+            return $"{Environment}-{Project}-{name}";
+        }
     }
 }

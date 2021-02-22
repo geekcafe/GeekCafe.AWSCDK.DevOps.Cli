@@ -19,7 +19,7 @@ namespace GeekCafe.AWSCDK.DevOps.Stacks
         public Amazon.CDK.AWS.AutoScaling.AutoScalingGroup Create(Amazon.CDK.AWS.EC2.Vpc vpc, SecurityGroup sg)
         {
             // todo define roles in config
-            var role = new Security.Roles.IamRole().Create(this, $"{_config.Environment}-{_config.Project}-asg-ec2-role");
+            var role = new Security.Roles.IamRole().Create(this, _config, "asg-ec2-role");
             var selection = new SubnetSelection
             {
                 SubnetType = SubnetType.PUBLIC
@@ -54,8 +54,8 @@ namespace GeekCafe.AWSCDK.DevOps.Stacks
 
             });
 
-            Utilities.Tagging.Tag(asg, _config.Asg.Tags);
-            Utilities.Tagging.Tag(asg, _config.Tags);
+            Utilities.Tagging.Tag(asg, _config, _config.Asg.Tags);
+            Utilities.Tagging.Tag(asg, _config, _config.Tags);
 
             //asg.ScaleOnCpuUtilization()
             
@@ -69,7 +69,7 @@ namespace GeekCafe.AWSCDK.DevOps.Stacks
             {
                 new Configuration.Tag() {Name = name, Value = value}
             };
-            Utilities.Tagging.Tag(scope, tags);
+            Utilities.Tagging.Tag(scope, _config, tags);
         }
 
 
