@@ -34,10 +34,11 @@ namespace GeekCafe.AWSCDK.DevOps.Stacks.DataStorage.Databases.RDSDatabases
                     SubnetType = SubnetType.ISOLATED
                 },
                 Vpc = vpc,
-                MultiAz = true,
-                BackupRetention = Duration.Days(7),
-                StorageEncrypted = true,
-                AutoMinorVersionUpgrade = true,
+                MultiAz = configSettings.Rds.MultiAz,
+                BackupRetention = Duration.Days(configSettings.Rds.BackupRetentionInDays),
+                StorageEncrypted = configSettings.Rds.StorageEncrypted,
+                AutoMinorVersionUpgrade = configSettings.Rds.AutoMinorVersionUpgrade,
+                // todo
                 StorageType = StorageType.GP2,
                 SecurityGroups = securityGroups,
                 InstanceIdentifier = configSettings.Rds.Name,

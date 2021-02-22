@@ -9,6 +9,10 @@ namespace GeekCafe.AWSCDK.DevOps.Configuration
         public string Password { get; set; }
         public string DatabaseName { get; set; }
         public bool DeletionProtection { get; set; } = true;
+        public bool MultiAz { get; set; }
+        public int BackupRetentionInDays { get; set; }
+        public bool StorageEncrypted { get; set; }
+        public bool AutoMinorVersionUpgrade { get; set; }
 
     }
 }
