@@ -60,9 +60,7 @@ namespace GeekCafe.AWSCDK.DevOps.Cli.Commands.FactoryItems
             // database stack            
             var dbStack = new Stacks.DataStorage.Databases.RDSDatabases.MySQLStack(app, config.Rds.StackName);            
             dbStack.Create(vpcStack.Vpc, config, new[] { dbSecurityGroup });
-            
-            
-
+                       
 
             // autoscaling group
             var autoScalingGroup = new Stacks.AutoScalingGroupStack(app, config);
@@ -76,18 +74,11 @@ namespace GeekCafe.AWSCDK.DevOps.Cli.Commands.FactoryItems
 
             var asg = autoScalingGroup.Create(vpcStack.Vpc, asgSecurityGroup);
             
-
-            //dbStack.GiveResourceAccessToRDS(asgSecurityGroup);
-
-
-
             // load balancer
             var lb = new Stacks.LoadBalancers.ALBStack(app, config);                                   
             lb.Create(lb, vpcStack.Vpc, asg, worldToElbSecurityGroup);
 
             
-
-
             var cloudAssembly = app.Synth();
 
             // return success

@@ -7,36 +7,37 @@ namespace GeekCafe.AWSCDK.DevOps.Configuration
     public abstract class _BaseClass
     {
 
-        private IGlobalSettings _globalSettings;
+        internal IGlobalSettings GlobalSettings;
         private string _stackName = "";
         private string _name = "";
         public _BaseClass() { }
 
         public _BaseClass(IGlobalSettings globalSettings)
         {
-            _globalSettings = globalSettings;
+            GlobalSettings = globalSettings;
         }
 
         [JsonIgnore]
-        public string Project => _globalSettings?.Project;
+        public string Project => GlobalSettings?.Project;
         [JsonIgnore]
-        public string Company => _globalSettings?.Company;
+        public string Company => GlobalSettings?.Company;
         [JsonIgnore]
-        public string Environment => _globalSettings?.Environment;
+        public string Environment => GlobalSettings?.Environment;
 
 
-        //public string Id { get; set; } = "";
+        
         public string Name
         {
-            get
-            {
-                return $"{Environment}-{Project}-{_name}";
-            }
-            set
-            {
-                _name = value;
-            }
+            get { return $"{Environment}-{Project}-{_name}"; }
+            set { _name = value; }
         }
+
+        /// <summary>
+        /// Tags
+        /// </summary>
+        public List<Tag> Tags { get; set; } = new List<Tag>();
+
+
         /// <summary>
         /// Name of the CloudFormation Stack which is managed by the CDK
         /// </summary>
@@ -45,11 +46,11 @@ namespace GeekCafe.AWSCDK.DevOps.Configuration
             get { return GetRunTimeStackName(); }
             set { _stackName = value; }
         }
-        public List<Tag> Tags { get; set; } = new List<Tag>();
+        
 
         public string GetRunTimeStackName()
         {
-            if(_globalSettings != null)
+            if(GlobalSettings != null)
             {
                 return $"{Environment}-{_stackName}";
             }

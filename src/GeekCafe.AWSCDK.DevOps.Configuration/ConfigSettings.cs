@@ -5,10 +5,7 @@ using GeekCafe.AWSCDK.DevOps.Core.Utilities;
 namespace GeekCafe.AWSCDK.DevOps.Configuration
 {
     public interface IConfigSettings: IGlobalSettings
-    {
-        public string Environment { get; set; } 
-        public string Company { get; set; }
-        public string Project { get; set; }
+    {        
         public Vpc Vpc { get; set; } 
         public Rds Rds { get; set; } 
         public AutoScalingGroup Asg { get; set; }
@@ -33,9 +30,6 @@ namespace GeekCafe.AWSCDK.DevOps.Configuration
 
         }
         
-
-
-
         public static ConfigSettngs Load(string path)
         {
             // load the configuration file

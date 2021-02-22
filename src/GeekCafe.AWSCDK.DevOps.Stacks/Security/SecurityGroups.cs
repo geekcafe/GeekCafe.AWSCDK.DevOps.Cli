@@ -31,18 +31,7 @@ namespace GeekCafe.AWSCDK.DevOps.Stacks.Security
             return sg;
         }
 
-        //public static SecurityGroup CreateWorldToElb(Constructs.Construct construct, Vpc vpc, string name, string description = null, IPeer[] peers = null)
-        //{
-        //    description = (description != null) ? description : "World To ELB";
-        //    return CreateHttpHttps(construct, vpc, name, description, peers);
-        //}
-
-        //public static SecurityGroup CreateElbToHost(Constructs.Construct construct, Vpc vpc, string name, string description, IPeer elbSecurityGroup)
-        //{
-        //    description = (description != null) ? description : "ELB To Host";
-        //    return CreateHttpHttps(construct, vpc, name, description, new [] { elbSecurityGroup});
-        //}
-
+       
         public static SecurityGroup CreateHostToRDS(Constructs.Construct construct, Vpc vpc, string name, string description, SecurityGroup elbSecurityGroup)
         {
             var ports = new Port[]
