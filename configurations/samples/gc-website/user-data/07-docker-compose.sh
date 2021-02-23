@@ -23,6 +23,8 @@ services:
   web-service:    
     image: __DOCKER_IMAGE__     
     container_name: web-site
+    volumes:
+      - ${MEDIA_PATH}:/app/www/uploads
     environment:                 
       ENVIRONMENT : __ENVIRONMENT__
       APP_LOG_PATH: /app/log/
@@ -33,7 +35,7 @@ services:
       DB_PORT: ${DB_PORT}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME: ${DB_NAME}
+      DB_NAME: ${DB_NAME}      
     ports:
        - "5000:5000"   
     depends_on:
